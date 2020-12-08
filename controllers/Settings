@@ -1,0 +1,132 @@
+<?php
+
+
+class Settings
+{
+    private static $options_name = 'mubcal_options';
+    private static $nonce_key = 'admin-ajax-nonce';
+
+    static function init_settings()
+    {
+        register_setting(ALSWH_SETTINGS_GROUP, self::$options_name, [
+            'sanitize_callback' => [get_class(), 'validate']
+        ]);
+//
+//
+//        add_settings_section('mubcal-general-options', 'Import Options', function () {
+//        }, MUB_MENU_SLUG);
+//
+//        self::add_setting(
+//            'mubcal-poststatus',
+//            'Immediately Publish',
+//            MUB_PLUGIN_PATH . '/views/partials/option-poststatus.php',
+//            'mubcal-general-options'
+//        );
+    }
+
+    static function init_menu()
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
+        add_submenu_page(
+            'tools.php',
+            'Makeup Bookings - Calendar Integration',
+            'Calendar Integration',
+            'manage_options',
+            MUB_MENU_SLUG,
+            function () {
+                require(MUB_PLUGIN_PATH . '/views/plugin-menu.php');
+            }
+        );
+    }
+
+    static function enqueue()
+    {
+//        add_action('admin_enqueue_scripts', static function ($hook) {
+//            if ($hook !== 'tools_page_mubcal') {
+//                return;
+//            }
+//
+//            wp_enqueue_script('plugin-script',
+//                plugins_url('plugin-script.js', MUB_PLUGIN_PATH . 'publication-import.php'),
+//                array('jquery'));
+//            wp_localize_script('plugin-script', 'mubcalAjax', [
+//                'adminUrl' => admin_url('admin-ajax.php'),
+//                'nonce' => wp_create_nonce(self::$nonce_key),
+//            ]);
+//
+//            wp_enqueue_style(
+//                'plugin-style',
+//                plugins_url('style.css', MUB_PLUGIN_PATH . 'publication-import.php'));
+//        });
+    }
+
+    static function error_notice($msg = '')
+    {
+        include(MUB_PLUGIN_PATH . '/views/error-notice.php');
+    }
+
+    static function get_page_url()
+    {
+        return admin_url('tools.php?page=' . MUB_MENU_SLUG);
+    }
+
+    static function get_options_name()
+    {
+        return self::$options_name;
+    }
+
+    static function get_nonce_key()
+    {
+        return self::$nonce_key;
+    }
+
+    /**
+     * Enter custom validation logic here
+     *
+     * @param $input
+     * @return bool
+     */
+    static function validate($input) {
+        return true;
+    }
+
+    /**
+     * Add a setting and HTML view template for setting into a given Setting section
+     *
+     * @param $id String Setting ID
+     * @param $title String Setting title
+     * @param $view_url String template file path
+     * @param $section String Setting Section label
+     */
+    private
+    static function add_setting($id, $title, $view_url, $section)
+    {
+        add_settings_field($id, $title, function () use ($id, $title, $view_url) {
+            $options = get_option(self::$options_name); //pass  these fields into the include template
+            $options_name = self::$options_name;
+            include($view_url);
+        }, MUB_MENU_SLUG, $section);
+    }
+
+    /**
+     * Pass in a callback function for html output instead of template path.
+     * I wish function overloading was possible.
+     *
+     * @param $id String Setting ID
+     * @param $title String Setting title
+     * @param $foo * Callback function
+     * @param $section String Setting Section label
+     */
+    private
+    static function add_setting_cb($id, $title, $foo, $section)
+    {
+        add_settings_field($id, $title, function () use ($foo) {
+            $options = get_option(self::$options_name);
+            $options_name = self::$options_name;
+            $foo();
+        }, MUB_MENU_SLUG, $section);
+    }
+}
