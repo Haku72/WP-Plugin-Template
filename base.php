@@ -25,8 +25,8 @@ if(!defined('{PREFIX}_SETTINGS_GROUP')) {
     define('{PREFIX}_SETTINGS_GROUP', '{value}');
 }
 
-if(!defined('MUB_MENU_SLUG')) {
-    define('MUB_MENU_SLUG', '{value}');
+if(!defined('{PREFIX}_MENU_SLUG')) {
+    define('{PREFIX}_MENU_SLUG', '{value}');
 }
 
 
