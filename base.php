@@ -11,22 +11,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-$prefix = 'MUB_CAL';
+$prefix = '{plugin prefix}';
 $error_log_path = plugin_dir_path(__FILE__).'error.log';
 
-if(!defined('MUB_PLUGIN_PATH')) {
-    define('MUB_PLUGIN_PATH', plugin_dir_path(__FILE__));
+if(!defined('{PREFIX}_PLUGIN_PATH')) {
+    define('{PREFIX}_PLUGIN_PATH', plugin_dir_path(__FILE__));
 }
 
 /**
  * Settings group key
  */
-if(!defined('MUB_SETTINGS_GROUP')) {
-    define('MUB_SETTINGS_GROUP', 'mubcal');
+if(!defined('{PREFIX}_SETTINGS_GROUP')) {
+    define('{PREFIX}_SETTINGS_GROUP', '{value}');
 }
 
 if(!defined('MUB_MENU_SLUG')) {
-    define('MUB_MENU_SLUG', 'mubcal');
+    define('MUB_MENU_SLUG', '{value}');
 }
 
 
@@ -36,10 +36,9 @@ if(!defined('MUB_MENU_SLUG')) {
 //include( MUB_PLUGIN_PATH . '/controllers/CalendarIntegration.php' );
 //CalendarIntegration::init();
 
-register_activation_hook(__FILE__, function() {});
-register_deactivation_hook(__FILE__, function() {});
-
-function ALSWH_IMPORT_DeleteSettings(){
-    delete_option(Settings::get_options_name());
-}
-register_uninstall_hook(__FILE__, 'MUB_CAL_DeleteSettings');
+/**
+* Function hooks for plugin events
+*/
+register_activation_hook(__FILE__, static function () {});
+register_deactivation_hook(__FILE__, static function () {});
+register_uninstall_hook(__FILE__, static function () {});
