@@ -3,24 +3,24 @@
 
 class Settings
 {
-    private static $options_name = 'mubcal_options';
+    private static $options_name = '{PLUGIN_NAME}';
     private static $nonce_key = 'admin-ajax-nonce';
 
     static function init_settings()
     {
-        register_setting(ALSWH_SETTINGS_GROUP, self::$options_name, [
+        register_setting({PREFIX}_SETTINGS_GROUP, self::$options_name, [
             'sanitize_callback' => [get_class(), 'validate']
         ]);
 //
 //
-//        add_settings_section('mubcal-general-options', 'Import Options', function () {
-//        }, MUB_MENU_SLUG);
+//        add_settings_section('general-options', 'Import Options', function () {
+//        }, {PREFIX}_MENU_SLUG);
 //
 //        self::add_setting(
-//            'mubcal-poststatus',
+//            'poststatus',
 //            'Immediately Publish',
-//            MUB_PLUGIN_PATH . '/views/partials/option-poststatus.php',
-//            'mubcal-general-options'
+//            {PREFIX}_PLUGIN_PATH . '/views/partials/option-poststatus.php',
+//            'general-options'
 //        );
     }
 
@@ -32,45 +32,29 @@ class Settings
 
         add_submenu_page(
             'tools.php',
-            'Makeup Bookings - Calendar Integration',
-            'Calendar Integration',
+            '{Plugin Name}',
+            '{Plugin Menu Title}',
             'manage_options',
-            MUB_MENU_SLUG,
+            {PREFIX}_MENU_SLUG,
             function () {
-                require(MUB_PLUGIN_PATH . '/views/plugin-menu.php');
+                require({PREFIX}_PLUGIN_PATH . '/views/plugin-menu.php');
             }
         );
     }
 
     static function enqueue()
     {
-//        add_action('admin_enqueue_scripts', static function ($hook) {
-//            if ($hook !== 'tools_page_mubcal') {
-//                return;
-//            }
-//
-//            wp_enqueue_script('plugin-script',
-//                plugins_url('plugin-script.js', MUB_PLUGIN_PATH . 'publication-import.php'),
-//                array('jquery'));
-//            wp_localize_script('plugin-script', 'mubcalAjax', [
-//                'adminUrl' => admin_url('admin-ajax.php'),
-//                'nonce' => wp_create_nonce(self::$nonce_key),
-//            ]);
-//
-//            wp_enqueue_style(
-//                'plugin-style',
-//                plugins_url('style.css', MUB_PLUGIN_PATH . 'publication-import.php'));
-//        });
+        //standard WP enqueue functions go here
     }
 
     static function error_notice($msg = '')
     {
-        include(MUB_PLUGIN_PATH . '/views/error-notice.php');
+        include({PREFIX}_PLUGIN_PATH . '/views/error-notice.php');
     }
 
     static function get_page_url()
     {
-        return admin_url('tools.php?page=' . MUB_MENU_SLUG);
+        return admin_url('tools.php?page=' . {PREFIX}_MENU_SLUG);
     }
 
     static function get_options_name()
@@ -108,7 +92,7 @@ class Settings
             $options = get_option(self::$options_name); //pass  these fields into the include template
             $options_name = self::$options_name;
             include($view_url);
-        }, MUB_MENU_SLUG, $section);
+        }, {PREFIX}_MENU_SLUG, $section);
     }
 
     /**
@@ -127,6 +111,6 @@ class Settings
             $options = get_option(self::$options_name);
             $options_name = self::$options_name;
             $foo();
-        }, MUB_MENU_SLUG, $section);
+        }, {PREFIX}_MENU_SLUG, $section);
     }
 }
