@@ -30,9 +30,11 @@ if(!defined('MUB_MENU_SLUG')) {
 }
 
 
-include( MUB_PLUGIN_PATH . '/controllers/CalendarIntegration.php' );
-
-CalendarIntegration::init();
+/**
+* Include & activate plugin class here
+*/
+//include( MUB_PLUGIN_PATH . '/controllers/CalendarIntegration.php' );
+//CalendarIntegration::init();
 
 register_activation_hook(__FILE__, function() {});
 register_deactivation_hook(__FILE__, function() {});
