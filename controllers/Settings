@@ -1,16 +1,17 @@
 <?php
 
+abstract class PLUGIN_OPTIONS {
+    const OPTION_1 = 'option-1';
+}
 
 class Settings
 {
-    private static $options_name = '{PLUGIN_NAME}';
+    private static $options_prefix = '{PREFIX}';
     private static $nonce_key = 'admin-ajax-nonce';
 
     static function init_settings()
     {
-        register_setting({PREFIX}_SETTINGS_GROUP, self::$options_name, [
-            'sanitize_callback' => [get_class(), 'validate']
-        ]);
+
 //
 //
 //        add_settings_section('general-options', 'Import Options', function () {
@@ -57,11 +58,6 @@ class Settings
         return admin_url('tools.php?page=' . {PREFIX}_MENU_SLUG);
     }
 
-    static function get_options_name()
-    {
-        return self::$options_name;
-    }
-
     static function get_nonce_key()
     {
         return self::$nonce_key;
@@ -85,13 +81,19 @@ class Settings
      * @param $view_url String template file path
      * @param $section String Setting Section label
      */
-    private
-    static function add_setting($id, $title, $view_url, $section)
+    private static function add_setting($setting_name, $title, $view_url, $section)
     {
-        add_settings_field($id, $title, function () use ($id, $title, $view_url) {
-            $options = get_option(self::$options_name); //pass  these fields into the include template
-            $options_name = self::$options_name;
+        register_setting({PREFIX}_PLUGIN_SETTINGS, $setting_name, [
+            'sanitize_callback' => [__CLASS__, 'validate']
+        ]);
+        
+        add_settings_field($setting_name, $title, static function () use ($setting_name, $view_url) {
+            $option_name = self::$options_prefix . $setting_name;
+            $value = self::get_setting(option_name); //pass these fields into the include template
+            $name = $option_name;
+
             include($view_url);
+
         }, {PREFIX}_MENU_SLUG, $section);
     }
 
@@ -104,13 +106,18 @@ class Settings
      * @param $foo * Callback function
      * @param $section String Setting Section label
      */
-    private
-    static function add_setting_cb($id, $title, $foo, $section)
+    private static function add_setting_cb($setting_name, $title, $foo, $section)
     {
-        add_settings_field($id, $title, function () use ($foo) {
-            $options = get_option(self::$options_name);
-            $options_name = self::$options_name;
-            $foo();
-        }, {PREFIX}_MENU_SLUG, $section);
+        register_setting({PREFIX}_PLUGIN_SETTINGS, $setting_name, [
+            'sanitize_callback' => [__CLASS__, 'validate']
+        ]);
+
+        add_settings_field($setting_name, $title, $foo, {PREFIX}_MENU_SLUG, $section);
+    }
+
+    public static function get_setting($setting_name) {
+        $option_name = self::$options_prefix . $setting_name;
+
+        return get_option($option_name);
     }
 }
