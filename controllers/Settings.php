@@ -1,9 +1,13 @@
 <?php
 
-abstract class PLUGIN_OPTIONS {
+abstract class PLUGIN_SETTING_SECTIONS
+{
+    const SECTION_1 = 'section-1';
+}
+abstract class PLUGIN_SETTINGS
+{
     const OPTION_1 = 'option-1';
 }
-
 class Settings
 {
     private static $options_prefix = '{PREFIX}';
@@ -12,12 +16,12 @@ class Settings
     static function init_settings()
     {
         add_action('admin_init', static function() {
-            add_settings_section('options', 'Plugin Name', function () {}, '{PREFIX}_MENU_SLUG');
+            self::add_setting_section(PLUGIN_SETTING_SECTIONS::SECTION_1, 'General Options', 'general-options');
             self::add_setting(
-                'test',
-                'Setting 1',
-                "#",
-                'options'
+                PLUGIN_SETTING_SECTIONS::SECTION_1,
+                PLUGIN_SETTINGS::SETTING_1,
+                "Setting 1",
+                'general-options'
             );
         });
     }
@@ -90,7 +94,7 @@ class Settings
      * 
      * @see https://developer.wordpress.org/reference/functions/add_settings_section/
      */
-    private static function add_setting_section(string $id, string $title, string $page, callable $cb = (function () {}), $args = []) {
+    private static function add_setting_section(string $id, string $title, string $page, callable $cb = null, $args = []) {
         add_settings_section($id, $title, $cb, $page, $args);
     }
 
@@ -103,7 +107,7 @@ class Settings
      * @param string $section_slug The slug of the section where the setting will be added.
      * @param string $setting_id The ID of the setting.
      * @param string $title Setting label displayed in the options form.
-     * @param string $view_url The URL of the template file for the setting.
+     * @param string $view_path The URL of the template file for the setting.
      */
     private static function add_setting($section_slug, $setting_id, $title, $view_url)
     {
@@ -112,11 +116,11 @@ class Settings
             'sanitize_callback' => [__CLASS__, 'validate']
         ]);
 
-        add_settings_field($setting_id, $title, static function () use ($option_name, $view_url) {
+        add_settings_field($setting_id, $title, static function () use ($option_name, $view_path) {
             $value = self::get_setting($option_name); //pass these fields into the include template
             $name = $option_name;
 
-            include($view_url);
+            include($view_path);
         }, '{PREFIX}_MENU_SLUG', $section_slug);
     }
 
