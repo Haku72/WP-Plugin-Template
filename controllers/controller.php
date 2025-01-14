@@ -1,11 +1,24 @@
 <?php
 
-require MUB_PLUGIN_PATH . '/controllers/Settings.php';
+require '{prefix}_PLUGIN_PATH' . '/controllers/SettingsController.php';
 
-class CalendarIntegration {
-    private static $log_path = MUB_PLUGIN_PATH . 'error.log';
+class PluginController
+{
 
-    static function init() {
-        Settings::init_menu();
+    static function init()
+    {
+        Settings::init_settings();
+        
+        $filter = 'plugin_action_links_' . '{prefix}_PLUGIN_PATH';
+        add_filter($filter, "PluginControlller::actionLinksFilter");
+    }
+
+    static function actionLinksFilter($actions) {
+        $settings_link = 
+        '<a
+            href="' . Settings::get_page_url() . '">Settings
+        </a>';
+
+        return array_merge([$settings_link], $actions);
     }
 }
