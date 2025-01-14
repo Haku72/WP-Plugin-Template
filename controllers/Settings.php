@@ -11,18 +11,15 @@ class Settings
 
     static function init_settings()
     {
-
-//
-//
-//        add_settings_section('general-options', 'Import Options', function () {
-//        }, {PREFIX}_MENU_SLUG);
-//
-//        self::add_setting(
-//            'poststatus',
-//            'Immediately Publish',
-//            {PREFIX}_PLUGIN_PATH . '/views/partials/option-poststatus.php',
-//            'general-options'
-//        );
+        add_action('admin_init', static function() {
+            add_settings_section('options', 'Plugin Name', function () {}, '{PREFIX}_MENU_SLUG');
+            self::add_setting(
+                'test',
+                'Setting 1',
+                "#",
+                'options'
+            );
+        });
     }
 
     static function init_menu()
