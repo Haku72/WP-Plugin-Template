@@ -33,9 +33,9 @@ class Settings
             '{Plugin Name}',
             '{Plugin Menu Title}',
             'manage_options',
-            {PREFIX}_MENU_SLUG,
+            '{PREFIX}_MENU_SLUG',
             function () {
-                require({PREFIX}_PLUGIN_PATH . '/views/plugin-menu.php');
+                require('{PREFIX}_PLUGIN_PATH' . '/views/plugin-menu.php');
             }
         );
     }
@@ -47,12 +47,12 @@ class Settings
 
     static function error_notice($msg = '')
     {
-        include({PREFIX}_PLUGIN_PATH . '/views/error-notice.php');
+        include('{PREFIX}_PLUGIN_PATH' . '/views/error-notice.php');
     }
 
     static function get_page_url()
     {
-        return admin_url('tools.php?page=' . {PREFIX}_MENU_SLUG);
+        return admin_url('tools.php?page=' . '{PREFIX}_MENU_SLUG');
     }
 
     static function get_nonce_key()
@@ -70,51 +70,66 @@ class Settings
         return true;
     }
 
-    /**
-     * Add a setting and HTML view template for setting into a given Setting section
-     *
-     * @param $id String Setting ID
-     * @param $title String Setting title
-     * @param $view_url String template file path
-     * @param $section String Setting Section label
-     */
-    private static function add_setting($setting_name, $title, $view_url, $section)
-    {
-        register_setting({PREFIX}_PLUGIN_SETTINGS, $setting_name, [
-            'sanitize_callback' => [__CLASS__, 'validate']
-        ]);
-        
-        add_settings_field($setting_name, $title, static function () use ($setting_name, $view_url) {
-            $option_name = self::$options_prefix . $setting_name;
-            $value = self::get_setting(option_name); //pass these fields into the include template
-            $name = $option_name;
-
-            include($view_url);
-
-        }, {PREFIX}_MENU_SLUG, $section);
-    }
-
-    /**
-     * Pass in a callback function for html output instead of template path.
-     * I wish function overloading was possible.
-     *
-     * @param $id String Setting ID
-     * @param $title String Setting title
-     * @param $foo * Callback function
-     * @param $section String Setting Section label
-     */
-    private static function add_setting_cb($setting_name, $title, $foo, $section)
-    {
-        register_setting({PREFIX}_PLUGIN_SETTINGS, $setting_name, [
-            'sanitize_callback' => [__CLASS__, 'validate']
-        ]);
-
-        add_settings_field($setting_name, $title, $foo, {PREFIX}_MENU_SLUG, $section);
-    }
-
     public static function get_setting($setting_name) {
         $option_name = self::$options_prefix . $setting_name;
 
         return get_option($option_name);
+    }
+
+    
+    /**
+     * Adds a settings section to the given page.
+     * 
+     * Register a settings section with WordPress. It calls the WordPress function `add_settings_section` with the provided parameters.
+     * 
+     * @param string $id Slug-name to identify the section. Used in the 'id' attribute of tags.
+     * @param string $title Formatted title of the section. Shown as the heading for the section.
+     * @param callable $cb Function that echos out any content at the top of the section (between heading and fields).
+     * @param string $page The slug-name of the settings page on which to show the section.
+     * @param array $args Additional arguments to pass to the callback function.
+     * 
+     * @see https://developer.wordpress.org/reference/functions/add_settings_section/
+     */
+    private static function add_setting_section(string $id, string $title, string $page, callable $cb = (function () {}), $args = []) {
+        add_settings_section($id, $title, $cb, $page, $args);
+    }
+
+    /**
+     * Registers a setting and adds a settings field to the specified section.
+     * 
+     * This method registers a setting with WordPress and adds a settings field to the specified section.
+     * The settings field is populated with a template from the provided URL.
+     * 
+     * @param string $section_slug The slug of the section where the setting will be added.
+     * @param string $setting_id The ID of the setting.
+     * @param string $title Setting label displayed in the options form.
+     * @param string $view_url The URL of the template file for the setting.
+     */
+    private static function add_setting($section_slug, $setting_id, $title, $view_url)
+    {
+        $option_name = self::$options_prefix . $setting_id;
+        register_setting($section_slug, $setting_id, [
+            'sanitize_callback' => [__CLASS__, 'validate']
+        ]);
+
+        add_settings_field($setting_id, $title, static function () use ($option_name, $view_url) {
+            $value = self::get_setting($option_name); //pass these fields into the include template
+            $name = $option_name;
+
+            include($view_url);
+        }, '{PREFIX}_MENU_SLUG', $section_slug);
+    }
+
+    /**
+     * Same as above, except pass in a callback function for html output instead of template path.
+     * I wish function overloading was possible.
+     */
+    private static function add_setting_cb($section_slug, $setting_id, $title, callable $foo)
+    {
+        register_setting(GFMONITOR_SETTINGS_GROUP, $setting_id, [
+            'sanitize_callback' => [__CLASS__, 'validate']
+        ]);
+
+        add_settings_field($setting_id, $title, $foo, '{PREFIX}_MENU_SLUG', $section_slug);
     }
 }
