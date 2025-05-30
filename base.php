@@ -39,6 +39,6 @@ if(!defined('{PREFIX}_MENU_SLUG')) {
 /**
 * Function hooks for plugin events
 */
-register_activation_hook(__FILE__, static function () {});
-register_deactivation_hook(__FILE__, static function () {});
-register_uninstall_hook(__FILE__, static function () {});
+register_activation_hook(__FILE__, [PluginController::class, 'on_activate']);
+register_deactivation_hook(__FILE__, [PluginController::class, 'on_deactivate']);
+register_uninstall_hook(__FILE__, [PluginController::class, 'on_uninstall']);
