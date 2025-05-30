@@ -26,7 +26,7 @@ class Settings
             );
         });
 
-        add_action('admin_menu', 'Settings::init_menu');
+        add_action('admin_menu', [self::class, 'init_menu']);
     }
 
     static function init_menu()
