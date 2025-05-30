@@ -6,6 +6,14 @@ if(!defined('{PREFIX}_PLUGIN_PATH')) {
     define('{PREFIX}_PLUGIN_PATH', plugin_dir_path(__FILE__));
 }
 
+if (!defined('{PREFIX}_PLUGIN_URL')) {
+    define('{PREFIX}_PLUGIN_URL', plugin_dir_url(__FILE__));
+}
+
+if (!defined('{PREFIX}_CACHE_PATH')) {
+    define('{PREFIX}_CACHE_PATH', {PREFIX}_PLUGIN_PATH . 'public/cache');
+}
+
 /**
  * Settings group key
  */
