@@ -9,7 +9,7 @@ class PluginController
     {
         Settings::init_settings();
         
-        $filter = 'plugin_action_links_' . '{prefix}_PLUGIN_PATH';
+        $filter = 'plugin_action_links_' . {PREFIX}_PLUGIN_PATH;
         add_filter($filter, [self::class, 'actionLinksFilter']);
     }
 
