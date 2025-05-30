@@ -1,4 +1,5 @@
 <?php
+namespace controllers;
 
 abstract class PLUGIN_SETTING_SECTIONS
 {
