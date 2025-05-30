@@ -1,6 +1,6 @@
 <?php
 
-require '{prefix}_PLUGIN_PATH' . '/controllers/SettingsController.php';
+namespace controllers;
 
 class PluginController
 {
