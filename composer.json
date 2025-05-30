@@ -1,8 +1,11 @@
 {
     "autoload": {
         "psr-4": {
-            "controllers\\": "controllers" 
-        }
+            "controllers\\": "controllers"
+        },
+        "files": [
+            "definitions.php"
+        ]
     },
     "require-dev": {
         "symfony/var-dumper": "^7.3"
