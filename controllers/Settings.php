@@ -112,7 +112,7 @@ class Settings
      */
     private static function add_setting($section_id, $setting_id, $title, $view_path)
     {
-        register_setting($section_slug, $setting_id, [
+        register_setting({PREFIX}_SETTINGS_GROUP, $setting_id, [
             'sanitize_callback' => [__CLASS__, 'validate']
         ]);
 
@@ -130,7 +130,7 @@ class Settings
      */
     private static function add_setting_cb($section_id, $setting_id, $title, callable $foo)
     {
-        register_setting(GFMONITOR_SETTINGS_GROUP, $setting_id, [
+        register_setting({PREFIX}_SETTINGS_GROUP, $setting_id, [
             'sanitize_callback' => [__CLASS__, 'validate']
         ]);
 
