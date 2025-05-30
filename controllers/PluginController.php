@@ -21,4 +21,10 @@ class PluginController
 
         return array_merge([$settings_link], $actions);
     }
+    
+    static function on_activate() {}
+
+    static function on_deactivate() {}
+
+    static function on_uninstall() {}
 }
