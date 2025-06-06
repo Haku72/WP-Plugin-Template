@@ -69,12 +69,11 @@ class Settings
 
     /**
      * Enter custom validation logic here
-     *
-     * @param $input
-     * @return bool
+     * ONLY RETURN INPUT VALUE AS-IS, NOTHING ELSE
      */
-    static function validate($input) {
-        return true;
+    static function validate($input): mixed
+    {
+        return $input;
     }
 
     public static function get_setting($setting_id) {
